@@ -47,7 +47,7 @@ video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
 <div id="vw"><button class="cb" id="mute-btn" onclick="toggleMute()">&#x1F50A;</button><input type="range" id="vs" min="0" max="1" step=".05" value="1" oninput="setVolume(this.value)"></div>
 <button class="cb" onclick="skip(-10)">&#x23EA;</button>
 <button class="cb" onclick="skip(10)">&#x23E9;</button>
-<button class="cb" id="fit-btn" onclick="cycleAspect()">↕ عادي</button>
+<button class="cb" id="fit-btn" onclick="cycleAspect()">↕</button>
 <button class="cb" onclick="doFullscreen()">&#x26F6;</button>
 <div id="fg"></div>
 <button class="cb" onclick="reloadCurrentStream()">&#x1F504;</button>
@@ -58,17 +58,18 @@ video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8/dist/hls.min.js"></script>
 <script>
+var W='https://live1.alameeeretv.workers.dev/stream/';
 var CHANNELS=[
-{n:'ثمانية 1',u:'https://ahm79.store/live/0545580310/7337741654/746714.m3u8'},
-{n:'ثمانية 2',u:'https://ahm79.store/live/0545580310/7337741654/746717.m3u8'},
-{n:'ثمانية 3',u:'https://ahm79.store/live/0545580310/7337741654/746720.m3u8'}
+{n:'ثمانية 1',u:W+'746714.m3u8'},
+{n:'ثمانية 2',u:W+'746717.m3u8'},
+{n:'ثمانية 3',u:W+'746720.m3u8'}
 ];
 var hls=null,curIdx=-1,retryT=null;
 var vid=document.getElementById('vid'),loader=document.getElementById('loader'),chTitle=document.getElementById('ch-title');
 var pw=document.getElementById('player-wrap'),chBar=document.getElementById('ch-bar'),qm=document.getElementById('qm'),qBtn=document.getElementById('q-btn');
 var fitBtn=document.getElementById('fit-btn'),hCtrl=null;
-var ASPECTS=[{cls:'contain',lbl:'↕ عادي'},{cls:'fill',lbl:'⛶ ملء'}];var aIdx=0;
-function cycleAspect(){aIdx=(aIdx+1)%2;vid.style.objectFit=ASPECTS[aIdx].cls;fitBtn.textContent=ASPECTS[aIdx].lbl;}
+var ASPECTS=['contain','fill'];var aIdx=0;
+function cycleAspect(){aIdx=(aIdx+1)%2;vid.style.objectFit=ASPECTS[aIdx];}
 function doFullscreen(){if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}var el=document.documentElement;(el.requestFullscreen?el.requestFullscreen():el.webkitRequestFullscreen?el.webkitRequestFullscreen():Promise.resolve()).then(function(){if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});}).catch(function(){});}
 function showLoader(){loader.style.display='flex';}function hideLoader(){loader.style.display='none';}
 function toast(msg){var t=document.getElementById('err-toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},4000);}
@@ -106,7 +107,6 @@ function skip(s){vid.currentTime+=s;}
 CHANNELS.forEach(function(ch,i){var b=document.createElement('button');b.className='ch';b.textContent=ch.n;b.id='ch-'+i;b.onclick=function(){load(i);};chBar.appendChild(b);});
 pw.addEventListener('click',function(e){if(e.target.closest('#controls-overlay'))return;pw.classList.add('show-ctrl');clearTimeout(hCtrl);hCtrl=setTimeout(function(){pw.classList.remove('show-ctrl');},3000);});
 document.addEventListener('click',function(e){if(!e.target.closest('#qw'))closeQ();});
-var sv=localStorage.getItem('vol');if(sv){vid.volume=parseFloat(sv);document.getElementById('vs').value=sv;}
 load(0);
 </script>
 </body>
